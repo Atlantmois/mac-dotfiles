@@ -2,6 +2,22 @@
 
 我的 macOS 开发环境配置快照。`home/` 下的路径对应用户主目录中的路径，包含 Fish、Git、GitHub CLI、Helix、Yazi、Starship、uv、Herdr、Karabiner、Paneru、Ghostty、VS Code 和 OMP 的配置。
 
+## 配置文件在哪
+
+所有 26 个配置文件都在 [home/](home/) 目录中。以 `.` 开头的目录和文件（例如 `.config`、`.gitconfig`）是隐藏文件；在 macOS 访达中可按 `⌘⇧.` 显示。
+
+| 工具 | 文件入口 |
+| --- | --- |
+| Fish | [config.fish](home/.config/fish/config.fish)、[函数](home/.config/fish/functions/) |
+| Git、GitHub CLI | [.gitconfig](home/.gitconfig)、[gh/config.yml](home/.config/gh/config.yml) |
+| Helix | [配置与主题](home/.config/helix/) |
+| Yazi | [配置与主题](home/.config/yazi/) |
+| Starship、uv、Herdr | [Starship](home/.config/starship.toml)、[uv](home/.config/uv/uv.toml)、[Herdr](home/.config/herdr/config.toml) |
+| Karabiner、Paneru | [按键配置](home/.config/karabiner/karabiner.json)、[窗口管理配置](home/.paneru.toml)、[辅助脚本](home/.local/bin/focus-app.sh) |
+| Ghostty | [终端配置与着色器](home/Library/Application%20Support/com.mitchellh.ghostty/) |
+| VS Code | [用户配置与代码片段](home/Library/Application%20Support/Code/User/) |
+| OMP | [代理配置](home/.omp/agent/)、[最小模式配置](home/.omp/ompmin/)、[启动脚本](home/.local/bin/ompmin) |
+
 Conda 和 Codex 配置没有收录。Fish 配置中的 Conda 初始化段也已移除。Git 邮箱没有收录，可在安装后写入不受版本控制的 `~/.gitconfig.local`：
 
 ```sh
