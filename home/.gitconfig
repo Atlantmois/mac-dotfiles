@@ -1,0 +1,6 @@
+[user]
+    name = Atlantmois
+[pull]
+    rebase = false
+[include]
+    path = ~/.gitconfig.local

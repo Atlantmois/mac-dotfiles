@@ -1,0 +1,30 @@
+# yazi 主配置
+# ============================================================================
+# 本文件原先是：
+#
+#     [manager]
+#     editor = "hx"
+#
+# 这两行在 yazi 26.9 里**双重失效**，已按现代写法迁移：
+#
+#   1. `manager` 段名在 25.x 就改成了 `mgr`。官方 schema 的顶层只有
+#      confirm / input / mgr / open / opener / pick / plugin / preview / tasks / which，
+#      没有 manager（同版本出厂默认用的也是 [mgr]）。
+#
+#   2. 更关键：`editor` 这个字段在 26.9 的 yazi.toml 里**根本不存在**
+#      （全局搜官方 schema 零结果）。现在编辑器由 [opener] 规则决定，
+#      出厂默认是 `${EDITOR:-vi} %s`。
+#
+# 实际影响本来是零 —— 你 fish 里已 `set -gx EDITOR hx`，那两行虽死，按 e 仍会开 Helix。
+# 但默认规则带 `:-vi` 兜底：一旦 yazi 没继承到 shell 环境（例如从 GUI 启动），
+# 它会**默默退回 vi**。所以这里把 Helix 显式钉住，行为与今天完全一致、且不再依赖环境变量。
+# ============================================================================
+
+[opener]
+# 与出厂默认 `${EDITOR:-vi} %s` 等价（你的 EDITOR 就是 hx），只是不依赖它。
+#   block = true → 在当前终端里打开并等它退出，这是终端编辑器该有的行为
+#   for = "unix" → macOS 归在 unix 下（platform 枚举：unix/windows/linux/macos/android）
+# 注意只保留这一条：yazi 在多个规则同时匹配时会弹出选择器，多写一条反而添乱。
+edit = [
+	{ run = "hx %s", desc = "Helix", block = true, for = "unix" },
+]

@@ -1,0 +1,67 @@
+# Helix 语言配置
+# ---------------------------------------------------------------------------
+# 说明：本文件与 Helix 的内置默认配置**按字段合并**，不是替换。
+# 所以这里只补真正缺的东西，不重复声明 language-servers
+# （Python 的 ty + ruff 由内置默认提供）。
+#
+# 已有内置 formatter、无需在此声明的语言：fish（fish_indent）
+# C 使用 Xcode 自带的 clang-format，手动 :format；
+# java/html/css/json/toml/markdown/yaml 尚未配置 formatter。
+
+[[language]]
+name = "python"
+
+# ── 项目根标记（修复 goto definition 的关键）─────────────────────────────
+# Helix 内置的 python roots 只有 pyproject.toml / setup.py / poetry.lock /
+# pyrightconfig.json —— 而 cs61a-sp24、pyprojects 这类仓库**一个都没有**
+# （只有 .git）。于是 Helix 找不到项目根，回退到 cwd。
+# 如果你是从 ~ 启动 `hx 某个松散文件`，cwd 就是整个家目录，
+# ty 会把家目录当作 workspace 并索引约 5 万个文件（实测 6.95 秒），
+# 期间 Helix 发出的请求被 ty 以 -32801 ContentModified 拒绝，
+# 表现为按 gd 提示 "No definition found."。
+#
+# 加入 .git 后：只要文件在 git 仓库内，Helix 就能正确定位项目根，
+# ty 只需索引该项目（实测 810 个文件 / 0.025 秒，快约 280 倍）。
+# 注意 roots 是**整体替换**而非追加，所以必须把内置的 4 项一并列出。
+roots = ["pyproject.toml", "setup.py", "poetry.lock", "pyrightconfig.json", ".git"]
+
+# Ruff 的格式化器（Black 兼容）。ruff 0.16.8 已装在 /opt/homebrew/bin/ruff。
+#   format        - Ruff 的格式化子命令
+#   -             读 stdin、把结果写 stdout —— Helix 的 formatter 协议要求
+#   --stdin-filename %{buffer_name}
+#                 让 ruff 知道「这段代码本来属于哪个文件」，从而：
+#                   1. 正确向上查找并使用项目里的 pyproject.toml / ruff.toml 配置
+#                   2. 按扩展名区分 .py / .pyi / .ipynb 的处理方式
+#                 若省略这个参数，ruff 会把内容当作无名的 .py 处理，
+#                 你项目里自定义的 line-length 等设置就会被忽略。
+formatter = { command = "ruff", args = ["format", "--stdin-filename", "%{buffer_name}", "-"] }
+
+[[language]]
+name = "c"
+# 课程代码只在主动执行 :format 时重排，不在保存时自动改格式。
+auto-format = false
+formatter = { command = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-format", args = ["--assume-filename", "%{buffer_name}"] }
+
+# 复用 Helix 内置的 C 调试模板，仅指向 Xcode 已安装的调试器。
+[language.debugger]
+name = "lldb-dap"
+transport = "stdio"
+command = "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-dap"
+
+[[language.debugger.templates]]
+name = "binary"
+request = "launch"
+completion = [{ name = "binary", completion = "filename" }]
+args = { console = "internalConsole", program = "{0}" }
+
+[[language.debugger.templates]]
+name = "attach"
+request = "attach"
+completion = ["pid"]
+args = { console = "internalConsole", pid = "{0}" }
+
+[[language.debugger.templates]]
+name = "gdbserver attach"
+request = "attach"
+completion = [{ name = "lldb connect url", default = "connect://localhost:3333" }, { name = "file", completion = "filename" }, "pid"]
+args = { console = "internalConsole", attachCommands = ["platform select remote-gdb-server", "platform connect {0}", "file {1}", "attach {2}"] }

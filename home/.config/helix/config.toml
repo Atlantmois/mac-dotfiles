@@ -1,0 +1,72 @@
+theme = "my-transparent"
+
+[editor]
+trim-trailing-whitespace = true
+# 上一条不是冗余：Helix 的默认值是 false（见 helix-view/src/editor.rs 的
+# impl Default for Config），所以你这条是有效改动。
+
+# ── 相对行号 ─────────────────────────────────────────────────────────
+# 默认 "absolute"。改成 relative 后，配合 vim 式动作可以"数着跳"：
+#   5j / 12G / d3k / y4j
+# 对 Helix 的实际操作体感提升最明显的一项。零开销。
+line-number = "relative"
+
+# ── 模式变色 ─────────────────────────────────────────────────────────
+# 默认 false。开启后光标所在行的背景色随模式变化（normal/insert/select），
+# 一眼就知道当前在哪个模式。零开销（只是换个背景色）。
+color-modes = true
+
+# ── 高亮当前行（2026-09-19 停用）─────────────────────────────────────
+# 默认 false。开启后会用 ui.cursorline.primary 的背景色铺满当前行；
+# tokyonight 给的是 bg-menu = #16161e（接近纯黑），在透明主题上就是一条
+# 横贯整窗的黑带（实测 rgb(31,32,50) vs 周围背景 rgb(38,35,77)）。
+# 光标本身已经能指示当前行，这条黑带收益不抵视觉成本，故停用。
+# 想要回来：取消下面那行注释；或保留功能但让底色与背景一致：
+#   "ui.cursorline.primary" = {}      # 加到 my-transparent.toml
+# cursorline = true
+
+# ── 第 88 列标尺（2026-09-19 停用）───────────────────────────────────
+# 88 是 ruff 的默认行宽（实测：85 列不动、95 列才折行），这条线原本是给
+# ruff format 做视觉预警的。但主题是透明的、壁纸会透出来，不透明的标尺就成
+# 了一道糊在照片上的亮线 —— 深色主题下才含蓄，这套主题下收益不抵视觉成本。
+# ruff format 照旧按 88 折行，只是不再有那条参考线。
+# 想要回来：取消下面那行注释；想保留线又嫌亮，在主题里加
+#   "ui.virtual.ruler" = { bg = "bg" }
+# 按 PEP 8 想用 79 就写 [79, 88]。
+# rulers = [88]
+
+# 默认 false。强制 24 位真彩色，Ghostty 完全支持，避免配色被降到 256 色。
+true-color = true
+
+# 默认 5。调大后光标靠近上下边缘时保留更多上下文。
+scrolloff = 8
+
+# 默认 "never"。打开后在顶部显示已打开的 buffer（代价：占 1 行高度）。
+bufferline = "multiple"
+
+# ── 缩进参考线 ───────────────────────────────────────────────────────
+# 默认 render = false。Python 靠缩进表达结构，这条收益明显。
+[editor.indent-guides]
+render = true
+
+# ── 语言服务器 ───────────────────────────────────────────────────────
+# 默认 display-inlay-hints = false。开启后 ty 会把推断出的类型
+# 以浅色行内文字显示在变量旁边。这是全部新增项里唯一有可感开销的一条
+# （要渲染额外文本），但对课程作业这种小文件可以忽略。
+[editor.lsp]
+display-inlay-hints = false
+
+# 让 Ghostty 的光标轨迹在 Helix 里生效。
+# Helix 对 block 光标是「自己画」的：它会隐藏硬件光标，Ghostty 于是拿不到
+# 光标位置，直接跳过整段光标 uniform 更新，轨迹必然不出现。
+# 用非 block 形状 = 把光标交回终端，轨迹才会工作。
+[editor.cursor-shape]
+normal = "underline"   # 正常模式：下划线仍表示「操作这个字符」，且不遮住字形
+insert = "bar"         # 插入模式：竖线，vim 惯例
+select = "underline"   # 选择模式：同 normal，避免出现 block 导致轨迹断档
+
+# Cmd+Enter = 在下方新建一行并进入插入模式（对应 VS Code 的 Insert Line Below）。
+# 只在 insert mode 生效 —— normal mode 有 o 就够了。
+# 依赖 Ghostty 侧已解绑 Cmd+Enter 并按 Kitty 键盘协议原样转发。
+[keys.insert]
+"Cmd-ret" = "open_below"

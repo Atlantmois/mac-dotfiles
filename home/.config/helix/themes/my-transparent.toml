@@ -1,0 +1,11 @@
+inherits = "tokyonight_moon"  # 这里可以换成你喜欢的任何基础主题
+
+# 将编辑器主背景设为空，实现透明
+"ui.background" = {}
+
+# 为了让其他元素也透明，可以添加以下配置
+"ui.menu" = { fg = "white" }
+"ui.popup" = { fg = "white" }
+"ui.window" = { fg = "white" }
+"ui.help" = { fg = "light-gray" }
+"ui.statusline" = { fg = "gray" }

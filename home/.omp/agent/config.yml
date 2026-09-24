@@ -1,0 +1,12 @@
+modelRoles:
+  default: deepseek/deepseek-flash:high
+symbolPreset: nerd
+composer:
+  shape: band
+theme:
+  dark: dark-tokyo-night
+setupVersion: 2
+tools:
+  approvalMode: always-ask
+dev:
+  autoqaConsent: granted

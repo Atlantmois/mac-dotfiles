@@ -1,0 +1,183 @@
+{
+    // ==================== 编辑器 · 外观 ====================
+    "editor.fontFamily": "'JetBrains Maple Mono', monospace",
+    "editor.fontSize": 18,
+    "editor.fontLigatures": true,
+    "editor.lineHeight": 1.6,
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.smoothScrolling": true,
+    "editor.mouseWheelZoom": true,
+    "editor.renderWhitespace": "boundary",
+    "editor.guides.bracketPairs": true,
+    "editor.wordWrap": "on",
+    // ==================== 编辑器 · 行为 ====================
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": true,
+    "editor.acceptSuggestionOnEnter": "smart",
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    // ==================== 文件 ====================
+    "files.autoSave": "afterDelay",
+    "files.autoGuessEncoding": true,
+    // ==================== 工作台 · 外观 ====================
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "workbench.editor.empty.hint": "hidden",
+    "workbench.list.smoothScrolling": true,
+    "workbench.startupEditor": "none",
+    "window.dialogStyle": "custom",
+    // ==================== 终端 ====================
+    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.fontLigatures.enabled": true,
+    "terminal.integrated.mouseWheelZoom": true,
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    "terminal.integrated.enablePersistentSessions": false,
+    "terminal.integrated.hideOnStartup": "whenEmpty",
+    "terminal.integrated.initialHint": false,
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash",
+            "icon": "terminal-bash"
+        },
+        "zsh": {
+            "path": "zsh"
+        },
+        "fish": {
+            "path": "/usr/bin/fish"
+        },
+        "tmux": {
+            "path": "tmux",
+            "icon": "terminal-tmux"
+        },
+        "pwsh": {
+            "path": "pwsh",
+            "icon": "terminal-powershell"
+        }
+    },
+    "terminal.integrated.defaultProfile.linux": "fish",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "path": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+        },
+        "Command Prompt": {
+            "path": "C:\\WINDOWS\\System32\\cmd.exe",
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "Git Bash": {
+            "source": "Git Bash",
+            "icon": "terminal-git-bash",
+            "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+            "args": [
+                "--login",
+                "-i"
+            ]
+        },
+        "Nushell": {
+            "path": "C:\\Users\\30868\\scoop\\shims\\nu.exe",
+            "args": [
+                "-l"
+            ]
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "Nushell",
+    "terminal.integrated.profiles.osx": {
+        "fish": {
+            "path": "/opt/homebrew/bin/fish", // 这是你自己提供的 brew 安装路径
+            "args": [
+                "-l" // '-l' 参数确保以登录 Shell 启动，加载所有配置
+            ]
+        }
+    },
+    "terminal.integrated.defaultProfile.osx": "fish", // 将 fish 设置为默认配置
+    // ==================== Python · Ruff（主导格式化和检查） ====================
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always",
+            "source.fixAll.ruff": "always"
+        }
+    },
+    "python.terminal.focusAfterLaunch": true,
+    "python.terminal.activateEnvironment": false,
+    // ==================== C/C++ ====================
+    "clangd.arguments": [
+        "--query-driver=C:\\Users\\30868\\scoop\\apps\\mingw\\current\\bin\\*"
+    ],
+    "clangd.fallbackFlags": [
+        "--target=x86_64-w64-mingw32"
+    ],
+    // ==================== Git ====================
+    "git.autofetch": true,
+    // ==================== GitHub Copilot ====================
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": true,
+        "markdown": false,
+        "scminput": false,
+        "python": false,
+        "c": false
+    },
+    // ==================== ACP Client · Oh My Pi ====================
+    "acp.agents": {
+        "Oh My Pi": {
+            "command": "/opt/homebrew/bin/omp",
+            "args": [
+                "acp"
+            ],
+            "env": {}
+        }
+    },
+    "acp.autoApprovePermissions": "allowAll",
+    "acp.logTraffic": true,
+    // ==================== ACP Pro · Oh My Pi ====================
+    "acpPro.agents": [
+        {
+            "name": "Oh My Pi",
+            "command": "/opt/homebrew/bin/omp",
+            "args": [
+                "acp"
+            ],
+            "env": {}
+        }
+    ],
+    "acpPro.defaultAgent": "Oh My Pi",
+    "acpPro.autoApproveDefault": true,
+    // ==================== Oh My Pi for VS Code ====================
+    "ohMyPi.executablePath": "/opt/homebrew/bin/omp",
+    // ==================== 聊天 ====================
+    "chat.fontFamily": "'JetBrains Maple Mono', monospace",
+    "chat.fontSize": 18,
+    "chat.editor.fontFamily": "'JetBrains Maple Mono', monospace",
+    "chat.editor.fontSize": 16,
+    // ==================== 调试 ====================
+    "debug.showBreakpointsInOverviewRuler": true,
+    // ==================== JSON ====================
+    "json.schemaDownload.trustedDomains": {
+        "https://developer.microsoft.com/json-schemas/": true,
+        "https://esm.sh": true,
+        "https://json-schema.org/": true,
+        "https://json.schemastore.org/": true,
+        "https://raw.githubusercontent.com/devcontainers/spec/": true,
+        "https://raw.githubusercontent.com/microsoft/vscode/": true,
+        "https://schemastore.azurewebsites.net/": true,
+        "https://www.schemastore.org/": true
+    },
+    // ==================== 扩展 ====================
+    "chat.mcp.gallery.enabled": true,
+    "explorer.confirmDelete": false,
+    "markdown-preview-enhanced.previewTheme": "github-dark.css",
+    "[c]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "commentTranslate.source": "Bing",
+    "workbench.secondarySideBar.defaultVisibility": "hidden",
+    "python-envs.terminal.autoActivationType": "shellStartup",
+    "ty.inlayHints.variableTypes": false,
+    "ty.completions.autoImport": false,
+    "editor.accessibilitySupport": "on",
+    "terminal.external.osxExec": "Ghostty.app",
+    "terminal.integrated.agentHostProfile.osx": "",
+    "window.density.layout": "compact",
+}

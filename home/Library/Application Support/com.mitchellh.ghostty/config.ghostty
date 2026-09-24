@@ -1,0 +1,73 @@
+font-family = "Jetbrains Maple Mono"
+font-size = 16
+background-opacity = 0.85
+background-blur = 20
+
+# macOS 26+ 专属：原生 Liquid Glass 效果
+# ⚠️ 比上面那行**更重**，不建议在"低开销"前提下使用：
+#   数值模糊(20) 走的是私有 API CGSSetWindowBackgroundBlurRadius
+#     （见 Ghostty 源码 src/apprt/embedded.zig），由 WindowServer 合成器
+#     对窗口背后做一次高斯模糊 —— 成本随「半径 × 窗口面积」线性增长。
+#   macos-glass-* 是 macOS 26 的原生玻璃材质，做的是远多于模糊的逐像素
+#     运算（折射/镜面高光/自适应着色）。paneru 平铺多个窗口时每个都要算。
+# 所以想省开销就往"更小的数值"或 false 走，不要往 glass 走。
+# background-blur = macos-glass-regular
+
+# ── 配色统一 ─────────────────────────────────────────────────────────
+# 你的 Helix 主题 my-transparent 是 inherits = "tokyonight_moon"，
+# 而这里原先 theme 为空（用 Ghostty 默认配色），两边调色板是脱节的。
+# Ghostty 内置 463 个主题，TokyoNight Moon 就在其中。
+theme = "TokyoNight Moon"
+
+# ── 内边距 ───────────────────────────────────────────────────────────
+# Ghostty 默认只有 2，文字几乎贴着窗口边。配合 paneru 的 8pt 窗口间隙用。
+window-padding-x = 10
+window-padding-y = 8
+
+# ── 半透明下的可读性 ─────────────────────────────────────────────────
+# 你叠了 background-opacity 0.85 + blur + Helix 透明主题，共三层半透明。
+# 默认 minimum-contrast = 1（不设下限），这条保证文字始终能看清。
+minimum-contrast = 1.1
+
+# ── 交互细节（零开销）────────────────────────────────────────────────
+# 打字时隐藏鼠标指针，不挡字
+mouse-hide-while-typing = true
+# 光标改成竖线、关掉闪烁。关闪烁顺带少一次周期性重绘。
+# （Helix 会用自己的光标形状覆盖，这里影响的是 fish 提示符等场景）
+cursor-style = bar
+cursor-style-blink = false
+
+# ── 下拉式快速终端（Quake 风格）──────────────────────────────────────
+# 这是 Ghostty 内置能力，但**默认没有绑定任何键**。
+# global: 前缀 = 在任何应用里都能唤起（不需要 Ghostty 在前台）。
+# 相关的 quick-terminal-* 默认值已经合理：
+#   position = top / autohide = true / animation-duration = 0.2
+#
+# 触发键为什么不用 Ghostty 官方文档举的例子（cmd+backquote / ⌘`）：
+#   ⌘`  已被 macOS「聚焦下一个窗口」占用（默认启用）
+#   ⌘⇧` 已被 macOS「聚焦上一个窗口」占用
+#   加 global: 会系统级抢占它们，导致所有应用里的窗口轮换失效。
+# 所以改用你的 Hyper 键（Karabiner: 长按 Caps Lock = ⌃⌥⇧⌘），零冲突。
+# 测试：在 Safari 里按住 Caps Lock 再按 ` —— 终端应从屏幕顶部滑下。
+# 若 Hyper 组合没能穿透到 Ghostty 的全局监听，退而求其次改成：
+#   keybind = global:ctrl+backquote=toggle_quick_terminal
+# （注意 ⌃` 是 VS Code 切换内置终端的默认键，会被全局抢占）
+keybind = global:ctrl+alt+shift+cmd+backquote=toggle_quick_terminal
+
+# ── Neovide 风格光标轨迹（自定义着色器）──────────────────────────────
+# 相对路径以本配置文件所在目录为基准；调参见 shaders/cursor_warp.glsl 顶部
+custom-shader = shaders/cursor_warp.glsl
+# true = 仅在窗口聚焦时跑动画循环（省 CPU）。若残影会“卡住”不消失，改成 always
+# ⚠️ 不要改成 always —— 那会让着色器在失焦时也持续跑动画循环。
+custom-shader-animation = true
+
+# ── 键位：把 Cmd+Enter 让给编辑器 ────────────────────────────────────
+# Cmd+Enter 的内置默认就是 toggle_fullscreen（官方默认键位表里就有），
+# 会和 VS Code 那套「新建下一行」的习惯冲突。解绑后按键会按 Kitty 键盘
+# 协议原样送给前台程序，Helix 侧由 [keys.insert] "Cmd-ret" = "open_below" 接住。
+# 注：2026-09-19 这行曾被另一个并发会话重写配置文件时冲掉过，故恢复。
+keybind = super+enter=unbind
+# 强制 Option + Backspace 发送 Helix 能识别的 Alt+Backspace 信号
+keybind = alt+backspace=text:\x1b\x7f
+# 全屏仍可用：Ctrl+Cmd+F 本来就是 Ghostty 的内置默认（super+ctrl+f），
+# 不需要在这里再写一行。（本文件先前有过的那行是多余的，已不再添加。）

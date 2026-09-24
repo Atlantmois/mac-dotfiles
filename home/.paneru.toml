@@ -1,0 +1,103 @@
+
+[options]
+focus_follows_mouse = false
+mouse_follows_focus = false
+preset_column_widths = [0.25, 0.50, 0.75, 1.0]
+window_resize_cycle = true
+
+[padding]
+# 屏幕四边的外边距（不含窗口之间的间隙）
+top = 12
+bottom = 12
+# 左右原先未设置（=0），导致屏幕两侧只靠窗口自身的 horizontal_padding 撑出 6pt，
+# 比上下的 12pt 窄一半，视觉上不对称。
+# 设为 8，配合下面 [windows.all] 的 horizontal_padding = 4：
+#   屏幕左右边缘 = 8 + 4 = 12pt，与上下一致
+left = 8
+right = 8
+
+[bindings]
+# 主修饰键用 Alt（在 Mac 上对应 Option 键）
+# 配合 Vim 风格方向键，左手不离键盘即可完成焦点移动
+
+# === 焦点移动（vim 风格）===
+window_focus_west = "alt - h"      # 左
+window_focus_east = "alt - l"      # 右
+window_focus_north = "alt - k"     # 上
+window_focus_south = "alt - j"     # 下
+
+# === 窗口移动 ===
+window_swap_west = "alt + shift - h"
+window_swap_east = "alt + shift - l"
+window_swap_north = "alt + shift - k"
+window_swap_south = "alt + shift - j"
+
+# === 窗口操作 ===
+window_fullwidth = "alt - f"
+window_manage = "alt + shift - f"    # 切换浮动/平铺
+window_resize = "alt - r"          # 进入 resize 模式
+
+# === 虚拟桌面导航 ===
+window_virtualnum_1 = "alt - 1"
+window_virtualnum_2 = "alt - 2"
+window_virtualnum_3 = "alt - 3"
+window_virtualnum_4 = "alt - 4"
+window_virtualnum_5 = "alt - 5"
+
+# 将当前窗口移动到指定虚拟桌面
+window_virtualmovenum_1 = "alt + shift - 1"
+window_virtualmovenum_2 = "alt + shift - 2"
+window_virtualmovenum_3 = "alt + shift - 3"
+window_virtualmovenum_4 = "alt + shift - 4"
+window_virtualmovenum_5 = "alt + shift - 5"
+
+[swipe]
+# 原值 0.4 低于 paneru 允许的最小值 1.0（源码 clamp(1.0, 10.0)），
+# 会被静默钳制，实际生效的一直是 1.0。这里显式写成 1.0，手感与原来完全一致。
+# 注意语义：值越大停得越快。默认 4.0，1.0 是最滑的那一档。
+deceleration = 1.0
+sensitivity = 0.4
+continuous = false
+
+[swipe.gesture]
+fingers_count = 4
+direction = "Natural"
+vertical = false
+
+[decorations.inactive.dim]
+opacity_night = -0.04
+
+[windows.calculator]
+title = ".*"
+bundle_id = "com.apple.calculator"
+floating = true
+
+[windows.quicktime]
+title = ".*"
+bundle_id = "com.apple.QuickTimePlayerX"
+floating = true
+
+[windows.finder-info]
+# 原值 ".* Bilgisi" 是土耳其语（Bilgisi = 信息），在本机 zh_CN 系统上永远匹配不到，
+# 等于这条规则不存在。Finder「显示简介」窗口标题实际格式为「“文件名”简介」。
+# 下面同时覆盖简繁中文、英文和上游的土耳其语写法。
+title = ".*(简介|簡介|Info|Bilgisi)$"
+bundle_id = "com.apple.finder"
+floating = true
+
+# 原先这里有 [windows.music] width = 0.75，它与下面 [windows.all] 的 width = 0.5 冲突。
+# paneru 内部把规则存在 HashMap 里（无序），命中第一条就返回，
+# 导致 Music 窗口宽度在 0.5 / 0.75 之间每次启动随机。删除此处，统一走 0.5。
+# 若确实想让 Music 用 0.75：paneru 没有全局默认宽度选项，只能删掉
+# [windows.all] 的 width 一行，再给每个需要的 app 单独写 width。
+
+[windows.all]
+title = ".*"
+# 关键：这个值是「窗口左/右各留多少」，不是「两个窗口之间的间隙」。
+# 所以相邻两个窗口之间的实际间隙 = 2 × 该值。
+#   原值 6 → 间隙 12pt（实测：Ghostty 右边缘 730，Safari 左边缘 742）
+#   现值 4 → 间隙  8pt
+# 想更紧就改 3（间隙 6pt），想更松就改 5（间隙 10pt）；保存即热重载，无需重启。
+horizontal_padding = 4
+vertical_padding = 0
+width = 1.0
