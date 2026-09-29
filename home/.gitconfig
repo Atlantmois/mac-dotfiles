@@ -1,6 +1,18 @@
 [user]
-    name = Atlantmois
+	name = Atlantmois
+	email = zidanyang@foxmail.com
 [pull]
-    rebase = false
-[include]
-    path = ~/.gitconfig.local
+	rebase = false
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+[fetch]
+    prune = true
+[push]
+    autoSetupRemote = true
+[merge]
+    conflictStyle = zdiff3

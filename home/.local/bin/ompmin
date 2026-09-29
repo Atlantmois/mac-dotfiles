@@ -1,0 +1,81 @@
+#!/bin/sh
+# ompmin — OMP-native minimal mode launcher.
+#
+# Default tool surface is the smallest coherent OMP coding loop:
+#   read + bash + write + edit
+# Set OMPMIN_TOOLS=bash for the strict dsh-minimal one-shell variant.
+#
+# Measured (omp 18.2.11, deepseek-flash, same prompt):
+#   default           20,764 prompt tokens (1050 new + 19712 cached)
+#   this launcher      2,723 prompt tokens (2,560 cached on a warm prefix)
+#   OMPMIN_TOOLS=bash  1,138 prompt tokens
+#   --no-tools           259 prompt tokens
+#
+# Overridable:
+#   OMPMIN_HOME            install dir holding config.yml + SYSTEM.md (default ~/.omp/ompmin)
+#   OMPMIN_CONFIG          config overlay path (default $OMPMIN_HOME/config.yml)
+#   OMPMIN_SYSTEM_PROMPT   plain-text system prompt path (default $OMPMIN_HOME/SYSTEM.md)
+#   OMPMIN_TOOLS           comma-separated tool list (default read,bash,write,edit)
+#   OMPMIN_THINKING        thinking level (default low = 2048-token budget)
+#   OMPMIN_EXTENSIONS      space-separated extension files to load anyway
+#                          (default: herdr's pane-state reporter when present)
+#   OMPMIN_OMP_BIN         omp executable (default omp)
+#
+# Trailing arguments reach omp unchanged, so per-run overrides work:
+#   ompmin --thinking high -p "..."
+#   ompmin --approval-mode write "..."
+
+set -eu
+
+OMP_BIN=${OMPMIN_OMP_BIN:-omp}
+OMPMIN_HOME=${OMPMIN_HOME:-"$HOME/.omp/ompmin"}
+CONFIG=${OMPMIN_CONFIG:-"$OMPMIN_HOME/config.yml"}
+PROMPT=${OMPMIN_SYSTEM_PROMPT:-"$OMPMIN_HOME/SYSTEM.md"}
+TOOLS=${OMPMIN_TOOLS:-read,bash,write,edit}
+THINKING=${OMPMIN_THINKING:-low}
+
+fail() {
+    echo "ompmin: $*" >&2
+    exit 1
+}
+
+command -v "$OMP_BIN" >/dev/null 2>&1 ||
+    fail "cannot find omp executable: $OMP_BIN"
+
+# Fail loudly rather than letting --system-prompt fall back to using the path
+# itself as the literal prompt text.
+[ -r "$CONFIG" ] ||
+    fail "config overlay not readable: $CONFIG (install the bundle into $OMPMIN_HOME)"
+[ -r "$PROMPT" ] ||
+    fail "system prompt not readable: $PROMPT (install the bundle into $OMPMIN_HOME)"
+
+# --no-extensions still honors explicit -e paths. The herdr integration only
+# reports pane state (working/blocked/idle) over its socket: no prompt text, no
+# tools, no LLM calls, so it costs nothing in minimal mode.
+if [ "${OMPMIN_EXTENSIONS+set}" = set ]; then
+    extensions=$OMPMIN_EXTENSIONS
+else
+    extensions=
+    herdr="$HOME/.omp/agent/extensions/herdr-omp-agent-state.ts"
+    [ -r "$herdr" ] && extensions=$herdr
+fi
+
+set -- \
+    --config "$CONFIG" \
+    --system-prompt "$PROMPT" \
+    --append-system-prompt '' \
+    --thinking "$THINKING" \
+    --no-title \
+    --no-extensions \
+    --no-skills \
+    --no-rules \
+    --no-lsp \
+    --tools="$TOOLS" \
+    "$@"
+
+for ext in $extensions; do
+    [ -e "$ext" ] || fail "extra extension not found: $ext"
+    set -- -e "$ext" "$@"
+done
+
+exec "$OMP_BIN" "$@"

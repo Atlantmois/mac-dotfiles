@@ -1,7 +1,7 @@
 font-family = "Jetbrains Maple Mono"
 font-size = 16
-background-opacity = 0.85
-background-blur = 20
+# background-opacity = 0.85
+# background-blur = 20
 
 # macOS 26+ 专属：原生 Liquid Glass 效果
 # ⚠️ 比上面那行**更重**，不建议在"低开销"前提下使用：
@@ -14,20 +14,26 @@ background-blur = 20
 # background-blur = macos-glass-regular
 
 # ── 配色统一 ─────────────────────────────────────────────────────────
-# 你的 Helix 主题 my-transparent 是 inherits = "tokyonight_moon"，
-# 而这里原先 theme 为空（用 Ghostty 默认配色），两边调色板是脱节的。
+# Helix 侧是内置主题 tokyonight_moon，与这里同属一套 TokyoNight Moon 调色板。
+# 这里原先 theme 为空（用 Ghostty 默认配色），两边调色板是脱节的。
 # Ghostty 内置 463 个主题，TokyoNight Moon 就在其中。
-theme = "TokyoNight Moon"
+# 2026-09-26 更正：Helix 侧不再用自定义主题 my-transparent（已删除）。
+theme = "TokyoNight Night"
 
 # ── 内边距 ───────────────────────────────────────────────────────────
 # Ghostty 默认只有 2，文字几乎贴着窗口边。配合 paneru 的 8pt 窗口间隙用。
 window-padding-x = 10
 window-padding-y = 8
 
-# ── 半透明下的可读性 ─────────────────────────────────────────────────
-# 你叠了 background-opacity 0.85 + blur + Helix 透明主题，共三层半透明。
-# 默认 minimum-contrast = 1（不设下限），这条保证文字始终能看清。
-minimum-contrast = 1.1
+# ── 对比度兜底（当前未启用）──────────────────────────────────────────
+# 默认 minimum-contrast = 1（不设下限）。
+# 2026-09-26 更正：原注释写的是「0.85 透明 + blur + Helix 透明主题，三层半透明」，
+# 但 opacity/blur 一直是注释状态、Helix 也已改回不透明内置主题，前提不成立。
+# 而且 1.1 对本配色是空操作：TokyoNight Moon 里当文字用的色最低已是 ANSI 8 的
+# 1.8:1（#444a73 on #222436），全部高于 1.1。官方文档：1.1 只够保证"文字不与
+# 背景同色"，要避免"难读"需要 ≥ 3。真要抬亮最暗那档文字，直接改调色板更有效：
+#   palette = 8=#828bb8      # 抬完 ANSI 8 变 4.61:1，fish 自动补全等一并受益
+# minimum-contrast = 1.1
 
 # ── 交互细节（零开销）────────────────────────────────────────────────
 # 打字时隐藏鼠标指针，不挡字

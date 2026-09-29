@@ -23,3 +23,5 @@ known_hosts
 *token*
 *secret*
 *.local
+# 上面这条会连 ~/.local 目录一起忽略，这里把仓库里的 .local 重新纳入跟踪
+!home/.local/

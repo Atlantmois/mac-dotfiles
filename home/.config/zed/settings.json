@@ -1,0 +1,59 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "cursor_shape": "bar",
+  "cursor_animation": {
+    "enabled": true
+  },
+  "proxy": "",
+  "disable_ai": true,
+  "helix_mode": true,
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry"
+    }
+  },
+  "terminal": {
+    "font_size": 18.0
+  },
+  "base_keymap": "VSCode",
+  "mouse_wheel_zoom": true,
+  "minimap": {
+    "show": "always"
+  },
+  "cursor_blink": true,
+  "autosave": {
+    "after_delay": {
+      "milliseconds": 1000
+    }
+  },
+  "buffer_font_fallbacks": [
+    "monospace"
+  ],
+  "buffer_font_family": "JetBrains Maple Mono",
+  "auto_indent_on_paste": true,
+  "use_on_type_format": true,
+  "show_whitespaces": "boundary",
+  "format_on_save": "off",
+  "soft_wrap": "editor_width",
+  "icon_theme": "Zed (Default)",
+  "ui_font_size": 16,
+  "buffer_font_size": 18.0,
+  "theme": "Tokyo Night",
+  "languages": {
+    "Python": {
+      "language_servers": ["ty", "!basedpyright", "..."],
+      "formatter": {
+        "language_server": {
+          "name": "ruff"
+        }
+      }
+    }
+  }
+}
