@@ -1,4 +1,6 @@
-theme = "my-transparent"
+# 内置主题；与 Ghostty 的 theme = "TokyoNight Moon" 是同一套调色板。
+# （2026-09-26：原先用的是自定义主题 my-transparent —— 已删除，改回内置。）
+theme = "tokyonight"
 
 [editor]
 trim-trailing-whitespace = true
@@ -12,23 +14,35 @@ trim-trailing-whitespace = true
 line-number = "relative"
 
 # ── 模式变色 ─────────────────────────────────────────────────────────
-# 默认 false。开启后光标所在行的背景色随模式变化（normal/insert/select），
-# 一眼就知道当前在哪个模式。零开销（只是换个背景色）。
+# 默认 false。开启后**状态栏的模式指示器**按模式换底色（颜色来自主题的
+# ui.statusline.normal/insert/select：normal 蓝 / insert 绿 / select 品红），
+# 一眼就知道当前在哪个模式。零开销。
+# 2026-09-26 更正：原注释写的是"光标所在行的背景色随模式变化"——那是 cursorline
+# 的职责（下面那条已停用）；color-modes 只作用于模式指示器。实测：状态栏的
+# NOR 徽章随模式变色，光标所在行没有任何变色。
 color-modes = true
 
 # ── 高亮当前行（2026-09-19 停用）─────────────────────────────────────
-# 默认 false。开启后会用 ui.cursorline.primary 的背景色铺满当前行；
-# tokyonight 给的是 bg-menu = #16161e（接近纯黑），在透明主题上就是一条
-# 横贯整窗的黑带（实测 rgb(31,32,50) vs 周围背景 rgb(38,35,77)）。
-# 光标本身已经能指示当前行，这条黑带收益不抵视觉成本，故停用。
-# 想要回来：取消下面那行注释；或保留功能但让底色与背景一致：
-#   "ui.cursorline.primary" = {}      # 加到 my-transparent.toml
+# 默认 false。开启后会拿主题的 ui.cursorline.primary 铺满当前行；内置
+# tokyonight_moon 给的是 bg-menu = #1e2030（rgb 30,32,48），比编辑器底色
+# #222436（rgb 34,36,54）略暗，铺满后就是一条横贯整窗的淡暗带。
+# 光标本身已经能指示当前行，这条横带收益不抵视觉成本，故停用。
+# 2026-09-26 更正：原注释写的是「bg-menu = #16161e / 透明主题 / 加到
+# my-transparent.toml」——#16161e 是 base tokyonight 的取值（Moon 是 #1e2030），
+# 透明方案与 my-transparent.toml 都已废弃，实测 rgb(38,35,77) 那种"周围背景"
+# 是当时壁纸混色，不适用了。
+# 想要回来：取消下面那行注释；想连暗带一起去掉就自建一个主题文件覆盖：
+#   inherits = "tokyonight_moon"
+#   "ui.cursorline.primary" = { bg = "bg" }   # 与底色一致
 # cursorline = true
 
 # ── 第 88 列标尺（2026-09-19 停用）───────────────────────────────────
 # 88 是 ruff 的默认行宽（实测：85 列不动、95 列才折行），这条线原本是给
-# ruff format 做视觉预警的。但主题是透明的、壁纸会透出来，不透明的标尺就成
-# 了一道糊在照片上的亮线 —— 深色主题下才含蓄，这套主题下收益不抵视觉成本。
+# ruff format 做视觉预警的。当时的停用理由是「主题透明、壁纸透出来，不透明的
+# 标尺成了糊在照片上的亮线」。
+# 2026-09-26 更正：已改回内置不透明主题，且 tokyonight_moon 的
+# ui.virtual.ruler = { bg = "fg-gutter" } = #3b4261，对底色 #222436 只是对比度
+# 1.56 的暗线——"亮线"的前提已不成立，要不要重新打开可以按新依据再判。
 # ruff format 照旧按 88 折行，只是不再有那条参考线。
 # 想要回来：取消下面那行注释；想保留线又嫌亮，在主题里加
 #   "ui.virtual.ruler" = { bg = "bg" }
@@ -50,11 +64,11 @@ bufferline = "multiple"
 render = true
 
 # ── 语言服务器 ───────────────────────────────────────────────────────
-# 默认 display-inlay-hints = false。开启后 ty 会把推断出的类型
-# 以浅色行内文字显示在变量旁边。这是全部新增项里唯一有可感开销的一条
+# 当前未启用（Helix 默认 false；下面被注释的那行就是开启方式）。开启后 ty 会把
+# 推断出的类型以行内文字显示在变量旁边。这是全部新增项里唯一有可感开销的一条
 # （要渲染额外文本），但对课程作业这种小文件可以忽略。
 [editor.lsp]
-display-inlay-hints = false
+# display-inlay-hints = true
 
 # 让 Ghostty 的光标轨迹在 Helix 里生效。
 # Helix 对 block 光标是「自己画」的：它会隐藏硬件光标，Ghostty 于是拿不到

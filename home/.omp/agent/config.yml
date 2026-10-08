@@ -1,12 +1,131 @@
-modelRoles:
-  default: deepseek/deepseek-flash:high
 symbolPreset: nerd
 composer:
   shape: band
 theme:
-  dark: dark-tokyo-night
+  dark: titanium
+  light: light
 setupVersion: 2
+modelRoles:
+  default: deepseek/deepseek-flash
+
 tools:
-  approvalMode: always-ask
-dev:
-  autoqaConsent: granted
+  approvalMode: yolo
+  approval:
+    # eval 能绕过 bash.patterns 再启动 shell，直接禁掉最省心
+    eval: deny
+    # 18.2.8 的内置危险检测只有 override，yolo 会忽略；用 Bash 默认审批兜底
+    bash: prompt
+
+bash:
+  # 不自动把 && 组成的复合命令当成已批准
+  allowCompoundCommands: false
+
+  patterns:
+    # ── 绝对不应该自动执行 ──
+    - match: "rm -rf /"
+      approval: deny
+    - match: "rm -rf /*"
+      approval: deny
+
+    # BSD rm 常见的等价参数顺序
+    - match: "rm -fr /"
+      approval: deny
+    - match: "rm -fr /*"
+      approval: deny
+
+    - match: "mkfs*"
+      approval: deny
+    - match: "wipefs *"
+      approval: deny
+
+    - match: "curl *|*sh*"
+      approval: deny
+    - match: "curl *|*bash*"
+      approval: deny
+    - match: "wget *|*sh*"
+      approval: deny
+    - match: "wget *|*bash*"
+      approval: deny
+
+    # macOS 的磁盘格式化和 APFS 删除，与 mkfs / wipefs 一样禁止自动执行
+    - match: "diskutil erase*"
+      approval: deny
+    - match: "diskutil partitionDisk *"
+      approval: deny
+    - match: "diskutil apfs delete*"
+      approval: deny
+
+    # ── 真正重要的操作才问你 ──
+    - match: "sudo *"
+      approval: prompt
+
+    - match: "rm -rf *"
+      approval: prompt
+    - match: "rm -fr *"
+      approval: prompt
+
+    - match: "dd *"
+      approval: prompt
+
+    - match: "git reset --hard*"
+      approval: prompt
+    - match: "git clean *"
+      approval: prompt
+    - match: "git push --force*"
+      approval: prompt
+
+    - match: "reboot*"
+      approval: prompt
+    - match: "poweroff*"
+      approval: prompt
+    - match: "shutdown*"
+      approval: prompt
+
+
+    # macOS 安全、启动参数与持久服务配置；只读状态查询保持可直接执行
+    - match: "csrutil status"
+      approval: allow
+    - match: "csrutil authenticated-root status"
+      approval: allow
+    - match: "csrutil *"
+      approval: prompt
+    - match: "nvram *=*"
+      approval: prompt
+    - match: "nvram -d *"
+      approval: prompt
+    - match: "nvram -c*"
+      approval: prompt
+    - match: "launchctl bootstrap *"
+      approval: prompt
+    - match: "launchctl bootout *"
+      approval: prompt
+    - match: "launchctl enable *"
+      approval: prompt
+    - match: "launchctl disable *"
+      approval: prompt
+
+    # Homebrew 的主要安装、卸载、升级与服务变更；install 通配覆盖 reinstall / uninstall
+    - match: "brew *install *"
+      approval: prompt
+    - match: "brew upgrade*"
+      approval: prompt
+    - match: "brew services list*"
+      approval: allow
+    - match: "brew services info*"
+      approval: allow
+    - match: "brew services *"
+      approval: prompt
+
+    # Git 常用的 force push 短参数
+    - match: "git push -f*"
+      approval: prompt
+    - match: "git push * --force*"
+      approval: prompt
+    - match: "git push * -f*"
+      approval: prompt
+
+    # 必须排在所有限制之后：普通简单命令直接执行。
+    # 内置危险检测及未被明确放行的复合命令回落到 tools.approval.bash: prompt。
+    # 这些规则只负责 Bash 工具审批，不构成系统沙箱。
+    - match: "*"
+      approval: allow

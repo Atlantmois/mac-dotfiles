@@ -54,6 +54,7 @@ if status is-interactive
     if command -q zoxide
         zoxide init fish | source
     end
+
 end
 
 # 让 fzf 用 fd 来枚举文件，而不是默认的 `find`：

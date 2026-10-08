@@ -2,5 +2,11 @@
     name = Atlantmois
 [pull]
     rebase = false
+[fetch]
+    prune = true
+[push]
+    autoSetupRemote = true
+[merge]
+    conflictStyle = zdiff3
 [include]
     path = ~/.gitconfig.local
